@@ -18,17 +18,17 @@ namespace OpenWeatherMap.Api.Controllers
 
         private readonly string _baseUrl = "https://api.openweathermap.org";
         private readonly string _path = "/data/2.5/onecall";
-        private readonly string _apiKey = "apiKey";
         private readonly string _unit = "metric";
         private readonly string _dataExcluded = "minutely,hourly,alerts";
         private readonly string _language = "pt_br";
+        private readonly string _apiKey = "apiKey";
 
         public PrevisaoTempoController(IMemoryCache cache)
         {
             _cache = cache;
         }
 
-        // GET: /PrevisaoTempo/coordenadas
+        // GET: /PrevisaoTempo
         [HttpGet]
         public async Task<OpenWeather> GetAsync([FromQuery] double? lat, double? lon)
         {
@@ -54,7 +54,13 @@ namespace OpenWeatherMap.Api.Controllers
                     .SetQueryParam("appid", _apiKey)
                     .GetJsonAsync<OpenWeather>();
 
-                _cache.Set(cacheKey, previsaoTempo);
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                {
+                    SlidingExpiration = TimeSpan.FromMinutes(1),
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15)
+                };
+
+                _cache.Set(cacheKey, previsaoTempo, cacheEntryOptions);
                 return previsaoTempo;
             }
         }
