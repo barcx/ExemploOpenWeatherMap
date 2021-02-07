@@ -56,8 +56,8 @@ namespace OpenWeatherMap.Api.Controllers
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                 {
-                    SlidingExpiration = TimeSpan.FromMinutes(1),
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15)
+                    SlidingExpiration = TimeSpan.FromSeconds(5),
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30)
                 };
 
                 _cache.Set(cacheKey, previsaoTempo, cacheEntryOptions);
